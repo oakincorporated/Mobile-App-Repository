@@ -31,6 +31,7 @@ public class Manager : MonoBehaviour
     string thisCourse;
     string thisSsid;
     string thisClassId;
+    string thisUsername;
 
     int UserNumber;
 
@@ -57,7 +58,7 @@ public class Manager : MonoBehaviour
         //Sets the current gameobject to be the login page.
         currentGameObject = loginPage;
 
-        StartCoroutine(LoadData());
+        //StartCoroutine(LoadData());
         StartCoroutine(LoadLoginData());
     }
 
@@ -77,6 +78,9 @@ public class Manager : MonoBehaviour
             currentGameObject.SetActive(false);
             homePage.SetActive(true);
             currentGameObject = homePage;
+
+            string Username = usernameEnteredText;
+            StartCoroutine(LoadData(Username));
 
             buttonsParent.SetActive(true);
         }
@@ -185,7 +189,7 @@ public class Manager : MonoBehaviour
         //Debug.Log(GetThisUserData(usersLoginData[0], "Class_ID:"));
     }
 
-    IEnumerator LoadData()
+    IEnumerator LoadData(string username)
     {
         WWW userData = new WWW("http://localhost/realworldproject/userdata.php");
         yield return userData;
@@ -194,17 +198,27 @@ public class Manager : MonoBehaviour
 
         //Debug.Log(userDataString);
         users = userDataString.Split(';');
-        
+
         //Debug.Log(GetThisUserData(users[0], "Class_ID:"));
 
         //Cycle through the users till you find the user with the same username as the login.
 
-        UserNumber = 0;
+        for (int i = 0; i < users.Length; i++)
+        {
+            if(username == GetThisUserData(users[i], "Username:"))
+            {
+                thisFirstName = GetThisUserData(users[i], "First name:");
+                thisSsid = GetThisUserData(users[i], "SSID:");
+                thisCourse = GetThisUserData(users[i], "Course:");
+                thisClassId = GetThisUserData(users[i], "Class_ID:");
+                thisUsername = GetThisUserData(users[i], "Username:");
+                break;
+            }
+        }
 
-        thisFirstName = GetThisUserData(users[UserNumber], "First name:");
-        thisSsid = GetThisUserData(users[UserNumber], "SSID:");
-        thisCourse = GetThisUserData(users[UserNumber], "Course:");
-        thisClassId = GetThisUserData(users[UserNumber], "Class_ID:");
+        //UserNumber = 0;
+
+        
 
         //Debug.Log(thisFirstName + thisSsid + thisCourse + thisClassId);
 
