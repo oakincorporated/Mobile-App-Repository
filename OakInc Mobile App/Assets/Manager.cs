@@ -79,8 +79,7 @@ public class Manager : MonoBehaviour
             homePage.SetActive(true);
             currentGameObject = homePage;
 
-            string Username = usernameEnteredText;
-            StartCoroutine(LoadData(Username));
+            StartCoroutine(LoadData(usernameEnteredText));
 
             buttonsParent.SetActive(true);
         }
@@ -101,10 +100,6 @@ public class Manager : MonoBehaviour
 
         usernameEnteredText = usernameObject.GetComponent<TMP_InputField>().text;
         passwordEnteredText = passwordObject.GetComponent<TMP_InputField>().text;
-
-        // Do check on the vars above
-
-
     }
 
     bool loginCheck()
@@ -182,11 +177,8 @@ public class Manager : MonoBehaviour
         yield return userLoginData;
 
         string userLoginDataString = userLoginData.text;
-
-        //Debug.Log(userLoginDataString);
         usersLoginData = userLoginDataString.Split(';');
 
-        //Debug.Log(GetThisUserData(usersLoginData[0], "Class_ID:"));
     }
 
     IEnumerator LoadData(string username)
@@ -196,12 +188,7 @@ public class Manager : MonoBehaviour
 
         string userDataString = userData.text;
 
-        //Debug.Log(userDataString);
         users = userDataString.Split(';');
-
-        //Debug.Log(GetThisUserData(users[0], "Class_ID:"));
-
-        //Cycle through the users till you find the user with the same username as the login.
 
         for (int i = 0; i < users.Length; i++)
         {
@@ -215,12 +202,6 @@ public class Manager : MonoBehaviour
                 break;
             }
         }
-
-        //UserNumber = 0;
-
-        
-
-        //Debug.Log(thisFirstName + thisSsid + thisCourse + thisClassId);
 
         SetText(thisFirstName, thisCourse, thisSsid);
 
