@@ -67,20 +67,24 @@ public class Manager : MonoBehaviour
     // Check to see if the user's credentials are correct
     public void Login()
     {
-
+        // Get the entered username and password
         GetEnteredData();
 
-        // If the users entered stuff is right then...
+        // If the user has entered valid credentials then...
         if (loginCheck())
         {
+            // Turn off the incorrect credentials text.
             incorrectCredentials.SetActive(false);
 
+            // Move the user to the homepage
             currentGameObject.SetActive(false);
             homePage.SetActive(true);
             currentGameObject = homePage;
 
+            // Load the data for the logged in user.
             StartCoroutine(LoadData(usernameEnteredText));
 
+            // Turn on the navigation buttons (these are off whe trying to log in)
             buttonsParent.SetActive(true);
         }
         else
@@ -146,6 +150,7 @@ public class Manager : MonoBehaviour
 
     IEnumerator LoadLoginData()
     {
+        // Load the data from the php page on our cloud site with SSL encryption.
         WWW userLoginData = new WWW("https://d-walsh.co.uk/oakinc/logindata.php");
         yield return userLoginData;
 
@@ -156,6 +161,7 @@ public class Manager : MonoBehaviour
 
     IEnumerator LoadData(string username)
     {
+        // Load the data from the php page on our cloud site with SSL encryption.
         WWW userData = new WWW("https://d-walsh.co.uk/oakinc/userdata.php");
         yield return userData;
 
@@ -163,6 +169,7 @@ public class Manager : MonoBehaviour
 
         users = userDataString.Split(';');
 
+        // Loop until you find the block of data with the logged in user's username in it.
         for (int i = 0; i < users.Length; i++)
         {
             if(username == GetThisUserData(users[i], "Username:"))
@@ -176,6 +183,7 @@ public class Manager : MonoBehaviour
             }
         }
 
+        // Sets the text on screen to be the logged in user's data.
         SetText(thisFirstName, thisCourse, thisSsid);
 
     }
