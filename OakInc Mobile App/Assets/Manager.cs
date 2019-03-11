@@ -144,36 +144,9 @@ public class Manager : MonoBehaviour
         
     }
 
-    public void HomepageButton()
-    {
-        // Turns off the current gameobject and turns on the homepage one.
-
-        currentGameObject.SetActive(false);
-        homePage.SetActive(true);
-        currentGameObject = homePage;
-    }
-
-    public void AttendanceButton()
-    {
-        // Turns off the current gameobject and turns on the attendance one.
-
-        currentGameObject.SetActive(false);
-        attendancePage.SetActive(true);
-        currentGameObject = attendancePage;
-    }
-
-    public void ReportLostStickerButton()
-    {
-        // Turns off the current gameobject and turns on the report lost sticker one.
-
-        currentGameObject.SetActive(false);
-        reportLostStickerPage.SetActive(true);
-        currentGameObject = reportLostStickerPage;
-    }
-
     IEnumerator LoadLoginData()
     {
-        WWW userLoginData = new WWW("http://localhost/realworldproject/logindata.php");
+        WWW userLoginData = new WWW("https://d-walsh.co.uk/oakinc/logindata.php");
         yield return userLoginData;
 
         string userLoginDataString = userLoginData.text;
@@ -183,7 +156,7 @@ public class Manager : MonoBehaviour
 
     IEnumerator LoadData(string username)
     {
-        WWW userData = new WWW("http://localhost/realworldproject/userdata.php");
+        WWW userData = new WWW("https://d-walsh.co.uk/oakinc/userdata.php");
         yield return userData;
 
         string userDataString = userData.text;
@@ -233,5 +206,34 @@ public class Manager : MonoBehaviour
         CourseText.text = course;
         SSIDText.text = "SSID: " + ssid;
 
+    }
+
+
+
+    public void HomepageButton()
+    {
+        // Turns off the current gameobject and turns on the homepage one.
+
+        currentGameObject.SetActive(false);
+        homePage.SetActive(true);
+        currentGameObject = homePage;
+    }
+
+    public void AttendanceButton()
+    {
+        // Turns off the current gameobject and turns on the attendance one.
+
+        currentGameObject.SetActive(false);
+        attendancePage.SetActive(true);
+        currentGameObject = attendancePage;
+    }
+
+    public void ReportLostStickerButton()
+    {
+        // Turns off the current gameobject and turns on the report lost sticker one.
+
+        currentGameObject.SetActive(false);
+        reportLostStickerPage.SetActive(true);
+        currentGameObject = reportLostStickerPage;
     }
 }
