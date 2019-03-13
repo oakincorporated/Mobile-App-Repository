@@ -26,25 +26,32 @@ public class Manager : MonoBehaviour
     public string[] users;
     public string[] usersLoginData;
 
-    string thisFirstName;
-    string thisSurname;
-    string thisCourse;
-    string thisSsid;
-    string thisClassId;
-    string thisUsername;
+    public string thisFirstName, thisSurname, thisCourse, thisSsid, thisClassId, thisUsername;
+
+    public string thisSession, thisAttended, thisAbsentFrom, thisLateFrom;
 
     int UserNumber;
 
     TextMeshProUGUI NameText;
     TextMeshProUGUI CourseText;
     TextMeshProUGUI SSIDText;
+    TextMeshProUGUI totalSessionText;
+    TextMeshProUGUI attendedText;
+    TextMeshProUGUI absentFromText;
+    TextMeshProUGUI lateFromText;
 
     Transform nameObject;
     Transform courseObject;
     Transform ssidObject;
+    Transform totalSessionObject;
+    Transform attendedObject;
+    Transform absentFromObject;
+    Transform lateFromObject;
 
     string usernameCheck;
     string passwordCheck;
+
+    public int userNumber;
 
 
     // - - //
@@ -83,6 +90,8 @@ public class Manager : MonoBehaviour
 
             // Load the data for the logged in user.
             StartCoroutine(LoadData(usernameEnteredText));
+            // Load the attendance data for the logged in user.
+            //StartCoroutine(LoadAttendance(thisSsid));
 
             // Turn on the navigation buttons (these are off whe trying to log in)
             buttonsParent.SetActive(true);
@@ -179,12 +188,43 @@ public class Manager : MonoBehaviour
                 thisCourse = GetThisUserData(users[i], "Course:");
                 thisClassId = GetThisUserData(users[i], "Class_ID:");
                 thisUsername = GetThisUserData(users[i], "Username:");
+                userNumber = i;
                 break;
             }
         }
 
         // Sets the text on screen to be the logged in user's data.
-        SetText(thisFirstName, thisCourse, thisSsid);
+        SetHomepageText(thisFirstName, thisCourse, thisSsid);
+
+        StartCoroutine(LoadAttendance(thisSsid));
+    }
+
+    IEnumerator LoadAttendance(string ssid)
+    {
+        // Load the data from the php page on our cloud site with SSL encryption.
+        WWW attendanceData = new WWW("https://d-walsh.co.uk/oakinc/attendancedata.php");
+        yield return attendanceData;
+
+        string userAttendanceDataString = attendanceData.text;
+
+        users = userAttendanceDataString.Split(';');
+
+        // Loop until you find the block of data with the logged in user's username in it.
+        for (int i = 0; i < users.Length; i++)
+        {
+            if (ssid == GetThisUserData(users[i], "StudentID:"))
+            {
+                //thisSession = GetThisUserData(users[i], "First name:");
+                thisSession = "1"; // code for this does not work yet as we have not got the total sessions working in our sql database yet.
+                thisAttended = GetThisUserData(users[i], "Present:");
+                thisAbsentFrom = GetThisUserData(users[i], "Absent:");
+                thisLateFrom = GetThisUserData(users[i], "Late:");
+                break;
+            }
+        }
+
+        // Sets the text on screen to be the logged in user's data.
+        SetAttendanceText(thisSession, thisAttended, thisAbsentFrom, thisLateFrom);
 
     }
 
@@ -200,7 +240,29 @@ public class Manager : MonoBehaviour
 
 
 
-    void SetText(string name, string course, string ssid)
+    void SetAttendanceText(string totalSession, string attended, string absentFrom, string lateFrom)
+    {
+
+        Debug.Log("Setting text");
+        totalSessionObject = attendancePage.transform.Find("Info/TotalSession");
+        attendedObject = attendancePage.transform.Find("Info/Attended");
+        absentFromObject = attendancePage.transform.Find("Info/AbsentFrom");
+        lateFromObject = attendancePage.transform.Find("Info/LateFrom");
+
+
+        totalSessionText = totalSessionObject.GetComponent<TextMeshProUGUI>();
+        attendedText = attendedObject.GetComponent<TextMeshProUGUI>();
+        absentFromText = absentFromObject.GetComponent<TextMeshProUGUI>();
+        lateFromText = lateFromObject.GetComponent<TextMeshProUGUI>();
+
+        totalSessionText.text = "Total Sessions: " + totalSession;
+        attendedText.text = "Attended Sessions: "+attended;
+        absentFromText.text = "Absent from(%): " + absentFrom;
+        lateFromText.text = "Late from(%): " + lateFrom;
+
+    }
+
+    void SetHomepageText(string name, string course, string ssid)
     {
         nameObject = homePage.transform.Find("Info/Name");
         courseObject = homePage.transform.Find("Info/Course");
@@ -213,7 +275,6 @@ public class Manager : MonoBehaviour
         NameText.text = "Hi " + name;
         CourseText.text = course;
         SSIDText.text = "SSID: " + ssid;
-
     }
 
 
