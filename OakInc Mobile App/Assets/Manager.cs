@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System;
 
 public class Manager : MonoBehaviour
 {
@@ -30,8 +31,6 @@ public class Manager : MonoBehaviour
 
     public string thisSession, thisAttended, thisAbsentFrom, thisLateFrom;
 
-    int UserNumber;
-
     TextMeshProUGUI NameText;
     TextMeshProUGUI CourseText;
     TextMeshProUGUI SSIDText;
@@ -39,6 +38,7 @@ public class Manager : MonoBehaviour
     TextMeshProUGUI attendedText;
     TextMeshProUGUI absentFromText;
     TextMeshProUGUI lateFromText;
+    TextMeshProUGUI percentageAttend;
 
     Transform nameObject;
     Transform courseObject;
@@ -47,11 +47,10 @@ public class Manager : MonoBehaviour
     Transform attendedObject;
     Transform absentFromObject;
     Transform lateFromObject;
+    Transform percentageAttended;
 
     string usernameCheck;
     string passwordCheck;
-
-    public int userNumber;
 
 
     // - - //
@@ -188,7 +187,6 @@ public class Manager : MonoBehaviour
                 thisCourse = GetThisUserData(users[i], "Course:");
                 thisClassId = GetThisUserData(users[i], "Class_ID:");
                 thisUsername = GetThisUserData(users[i], "Username:");
-                userNumber = i;
                 break;
             }
         }
@@ -206,6 +204,7 @@ public class Manager : MonoBehaviour
         yield return attendanceData;
 
         string userAttendanceDataString = attendanceData.text;
+        Debug.Log("Inside the load attendance coroutine.");
 
         users = userAttendanceDataString.Split(';');
 
@@ -214,8 +213,9 @@ public class Manager : MonoBehaviour
         {
             if (ssid == GetThisUserData(users[i], "StudentID:"))
             {
+                Debug.Log("Inside the thing lol.");
                 //thisSession = GetThisUserData(users[i], "First name:");
-                thisSession = "1"; // code for this does not work yet as we have not got the total sessions working in our sql database yet.
+                thisSession = "10"; // code for this does not work yet as we have not got the total sessions working in our sql database yet.
                 thisAttended = GetThisUserData(users[i], "Present:");
                 thisAbsentFrom = GetThisUserData(users[i], "Absent:");
                 thisLateFrom = GetThisUserData(users[i], "Late:");
@@ -242,23 +242,22 @@ public class Manager : MonoBehaviour
 
     void SetAttendanceText(string totalSession, string attended, string absentFrom, string lateFrom)
     {
-
-        Debug.Log("Setting text");
         totalSessionObject = attendancePage.transform.Find("Info/TotalSession");
         attendedObject = attendancePage.transform.Find("Info/Attended");
         absentFromObject = attendancePage.transform.Find("Info/AbsentFrom");
         lateFromObject = attendancePage.transform.Find("Info/LateFrom");
-
 
         totalSessionText = totalSessionObject.GetComponent<TextMeshProUGUI>();
         attendedText = attendedObject.GetComponent<TextMeshProUGUI>();
         absentFromText = absentFromObject.GetComponent<TextMeshProUGUI>();
         lateFromText = lateFromObject.GetComponent<TextMeshProUGUI>();
 
+        Debug.Log("Setting text");
+
         totalSessionText.text = "Total Sessions: " + totalSession;
         attendedText.text = "Attended Sessions: "+attended;
-        absentFromText.text = "Absent from(%): " + absentFrom;
-        lateFromText.text = "Late from(%): " + lateFrom;
+        absentFromText.text = "Absent from: " + absentFrom;
+        lateFromText.text = "Late from: " + lateFrom;
 
     }
 
